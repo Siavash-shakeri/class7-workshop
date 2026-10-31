@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="کارگاه کار و فناوری پایه هفتم، گلپایگان — ارسال تکلیف دانش‌آموز، بررسی و بازخورد معلم، اجرای امن کد">
+<meta name="theme-color" content="#071a2b">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%235ee0c4'/%3E%3Ctext x='32' y='42' font-size='30' text-anchor='middle' fill='%2304231d' font-family='Tahoma'%3E7%3C/text%3E%3C/svg%3E">
+<title>کارگاه کار و فناوری · هفتم</title>
+<style>
+:root{--ink:#eaf6ff;--mut:#9fc0d6;--gl:rgba(255,255,255,.10);--bd:rgba(255,255,255,.22);--ac:#5ee0c4;--bad:#ff7a8a;--warn:#ffd36b}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--ink);font:16px/1.8 Tahoma,"Segoe UI",sans-serif;background:#071a2b;overflow-x:hidden}
+body::before,body::after{content:"";position:fixed;z-index:-1;border-radius:50%;filter:blur(70px)}
+body::before{width:460px;height:460px;background:#1f8f8a;top:-120px;right:-100px;opacity:.7}
+body::after{width:520px;height:520px;background:#4b3fa8;bottom:-160px;left:-120px;opacity:.65}
+main{max-width:900px;margin:0 auto;padding:20px 16px 60px}
+.glass{background:var(--gl);border:1px solid var(--bd);border-radius:22px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);padding:22px;margin:16px 0;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+h1{font-size:26px;margin:6px 0}h2{font-size:19px;margin:0 0 12px}h3{font-size:16px;margin:14px 0 6px}
+.sub{color:var(--mut);margin:0}
+label{display:block;margin:12px 0 4px;color:var(--mut);font-size:14px}
+input,select,textarea{width:100%;padding:12px 14px;border-radius:14px;border:1px solid var(--bd);background:rgba(0,0,0,.25);color:var(--ink);font:inherit}
+textarea{min-height:90px;resize:vertical}
+input:focus,button:focus-visible,select:focus,textarea:focus{outline:2px solid var(--ac);outline-offset:2px}
+button{font:inherit;cursor:pointer;border:1px solid var(--bd);background:var(--gl);color:var(--ink);padding:10px 18px;border-radius:14px;margin:6px 0 0 6px}
+button.go{background:var(--ac);color:#04231d;border:0;font-weight:700}
+button.rm{color:var(--bad)}
+button:disabled{opacity:.5;cursor:default}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.row{grid-template-columns:1fr}}
+.top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.fixed{padding:12px 14px;border-radius:14px;background:rgba(0,0,0,.18);color:var(--mut)}
+.file{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 0;border-top:1px solid var(--bd)}
+.file:first-of-type{border-top:0}
+.tag{display:inline-block;padding:1px 10px;border-radius:99px;font-size:13px;margin-right:6px}
+.t-ok{background:rgba(94,224,196,.18);color:var(--ac)}.t-warn{background:rgba(255,211,107,.18);color:var(--warn)}.t-bad{background:rgba(255,122,138,.18);color:var(--bad)}
+pre{direction:ltr;text-align:left;background:rgba(0,0,0,.35);padding:14px;border-radius:14px;overflow:auto;max-height:340px;white-space:pre-wrap;word-break:break-all}
+#msg{min-height:26px}.err{color:var(--bad)}.okm{color:var(--ac)}
+.hide{display:none}
+img.pv{max-width:100%;max-height:260px;border-radius:14px}
+a.lnk{color:var(--mut);font-size:13px}
+.drop{border:2px dashed var(--bd);border-radius:16px;padding:22px;text-align:center;color:var(--mut);cursor:pointer}
+.drop.over{border-color:var(--ac);color:var(--ac);background:rgba(94,224,196,.08)}
+.warnbox{border:1px solid rgba(255,211,107,.5);background:rgba(255,211,107,.10);color:var(--warn);border-radius:14px;padding:12px 14px}
+.ann{border-right:3px solid var(--ac);padding:8px 12px;background:rgba(0,0,0,.18);border-radius:10px;margin:10px 0}
+details summary{cursor:pointer;color:var(--mut)}
+.stat{font-size:14px;color:var(--mut)}
+</style>
+</head>
+<body>
+<main>
+<header class="top"><div><h1 id="title">کارگاه کار و فناوری · هفتم</h1><p class="sub">گلپایگان، استان اصفهان</p></div><div><button id="home" class="hide">خانه</button></div></header>
+<div id="msg" role="status"></div>
+<div id="app"></div>
+<noscript><p class="err">برای استفاده از این سایت، جاوااسکریپت مرورگر را روشن کن.</p></noscript>
+<p><a class="lnk" href="#teacher">ورود معلم</a></p>
+</main>
+<script>
+/* ---------- تنظیمات ---------- */
+/* نکته امنیتی مهم: این سایت سرور ندارد و داده‌ها فقط در مرورگر همان دستگاه می‌مانند.
+   رمزهای پیش‌فرض زیر فقط برای اولین ورود هستند؛ معلم در اولین ورود باید رمز را عوض کند.
+   پس از اولین ورود موفق با رمز قدیمی، رمز به‌صورت خودکار به PBKDF2 با ۱۲۰ هزار تکرار ارتقا پیدا می‌کند
+   و دیگر هش قدیمی استفاده نمی‌شود. قفل ورود هم پس از ۵ تلاش ناموفق، ۵ دقیقه قفل می‌کند. */
+const DEF_TEACHER={u:'teacher7',p:'fadb1d629a05ca8e1d3b2e8ad1dbccf07c1e0ea2943a0fcb8924c6b52cd29993'};
+const BUILDER={u:'maryam',p:'54c9f7c896b996baf924642074591b6623207bb1b2fc73a95186bfeacb7c855e'};
+const EXT={py:'text',js:'text',txt:'text',png:'img',jpg:'img',jpeg:'img',gif:'img',bmp:'img',pdf:'pdf',doc:'doc',docx:'doc',ppt:'doc',pptx:'doc'};
+const MAGIC={png:[0x89,0x50],jpg:[0xFF,0xD8],jpeg:[0xFF,0xD8],gif:[0x47,0x49],bmp:[0x42,0x4D],pdf:[0x25,0x50],docx:[0x50,0x4B],pptx:[0x50,0x4B]};
+const $=s=>document.querySelector(s), app=$('#app');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const say=(t,bad)=>{$('#msg').innerHTML=t?`<span class="${bad?'err':'okm'}">${esc(t)}</span>`:''};
+async function H(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('gg7|'+s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+/* ---------- هش قوی PBKDF2 (ارتقای خودکار از هش قدیمی) ---------- */
+const b64e=b=>btoa(String.fromCharCode(...new Uint8Array(b)));
+const b64d=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const hexB=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+async function pbkdf2(pw,salt){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveBits']);const d=await crypto.subtle.deriveBits({name:'PBKDF2',salt,iterations:120000,hash:'SHA-256'},k,256);return hexB(d)}
+async function makeCred(pw){const salt=crypto.getRandomValues(new Uint8Array(16));return{v:2,salt:b64e(salt),hash:await pbkdf2(pw,salt)}}
+async function credOk(stored,pw){
+  if(typeof stored==='string')return (await H(pw))===stored;
+  if(stored&&stored.v===2)return (await pbkdf2(pw,b64d(stored.salt)))===stored.hash;
+  if(stored&&stored.p)return (await H(pw))===stored.p;
+  return false}
+const isLegacy=c=>!c||typeof c==='string'||(c&&c.p&&!c.v);
+/* ---------- قفل ورود: ۵ تلاش ناموفق = ۵ دقیقه قفل ---------- */
+const lockId=id=>'class7_lock_'+id;
+function getLock(id){try{return JSON.parse(localStorage.getItem(lockId(id))||'null')}catch(e){return null}}
+function checkLock(id){const l=getLock(id);if(l&&l.until>Date.now())return Math.ceil((l.until-Date.now())/60000);return 0}
+function noteFail(id){try{const l=getLock(id)||{n:0};l.n++;if(l.n>=5){l.until=Date.now()+5*60*1000;l.n=0}localStorage.setItem(lockId(id),JSON.stringify(l))}catch(e){}}
+function clearLock(id){try{localStorage.removeItem(lockId(id))}catch(e){}}
+/* ---------- ذخیره‌سازی (داخل مرورگر همین دستگاه؛ سرور ندارد) ---------- */
+let db;
+const openDb=()=>new Promise((r,j)=>{const q=indexedDB.open('class7',1);q.onupgradeneeded=()=>{q.result.createObjectStore('files',{keyPath:'id',autoIncrement:true});q.result.createObjectStore('kv')};q.onsuccess=()=>{db=q.result;r()};q.onerror=()=>j(q.error)});
+const tx=(s,m,f)=>new Promise((r,j)=>{const t=db.transaction(s,m),q=f(t.objectStore(s));t.oncomplete=()=>r(q&&q.result);t.onerror=()=>j(t.error)});
+const kvGet=k=>tx('kv','readonly',o=>o.get(k)), kvSet=(k,v)=>tx('kv','readwrite',o=>o.put(v,k));
+const fAll=()=>tx('files','readonly',o=>o.getAll()), fAdd=x=>tx('files','readwrite',o=>o.add(x)), fPut=x=>tx('files','readwrite',o=>o.put(x)), fDel=id=>tx('files','readwrite',o=>o.delete(id));
+const maxMB=async()=>(await kvGet('maxMB'))||1;
+const bufToB64=buf=>{const u=new Uint8Array(buf);let s='';for(let i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(s)};
+const b64ToBuf=s=>{const b=atob(s),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u.buffer};
+const download=(name,blob)=>{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000)};
+/* ---------- بررسی امنیتی ---------- */
+const RULES=[
+ [/os\.(system|remove|rmdir|popen|unlink)|shutil\.rmtree|subprocess|__import__|\beval\s*\(|\bexec\s*\(|child_process|require\s*\(/,'bad','اجرای دستور سیستم یا حذف فایل'],
+ [/socket|urllib|requests|fetch\s*\(|XMLHttpRequest|WebSocket|http:\/\/|https:\/\//,'bad','دسترسی به شبکه یا آدرس اینترنتی'],
+ [/document\.cookie|localStorage|indexedDB|from js|import js|pyodide|window\.top|parent\./,'bad','تلاش برای دسترسی به اطلاعات مرورگر'],
+ [/while\s+True|while\s*\(\s*true\s*\)|for\s*\(\s*;\s*;\s*\)/,'warn','احتمال حلقه‌ی بی‌پایان']];
+async function scan(name,buf){
+ const ext=name.split('.').pop().toLowerCase(),u=new Uint8Array(buf),why=[];let lvl='ok';
+ const up=(l,w)=>{why.push(w);if(l==='bad')lvl='bad';else if(lvl==='ok')lvl=l};
+ if(u[0]===0x4D&&u[1]===0x5A)up('bad','فایل اجرایی (exe) است');
+ const m=MAGIC[ext];if(m&&(u[0]!==m[0]||u[1]!==m[1]))up('bad','محتوای فایل با پسوندش نمی‌خواند');
+ if(EXT[ext]==='text'){const t=new TextDecoder().decode(u);RULES.forEach(([re,l,w])=>{if(re.test(t))up(l,w)})}
+ if(EXT[ext]==='doc'){const s=new TextDecoder('latin1').decode(u);if(/vbaProject|macros\//i.test(s))up('bad','ماکرو (کد پنهان) دارد');
+  if(ext==='doc'||ext==='ppt')up('warn','فرمت قدیمی است؛ با احتیاط باز شود')}
+ return{lvl,why}}
+const tag=l=>`<span class="tag t-${l==='ok'?'ok':l==='warn'?'warn':'bad'}">${l==='ok'?'بدون مورد مشکوک':l==='warn'?'نیاز به دقت':'خطرناک'}</span>`;
+const fmt=b=>b>1048576?(b/1048576).toFixed(1)+' مگ':Math.max(1,Math.round(b/1024))+' کیلو';
+const faDate=t=>new Date(t).toLocaleString('fa-IR');
+/* ---------- اطلاعیه‌های معلم ---------- */
+const getAnn=async()=>(await kvGet('announcements'))||[];
+const annHtml=async()=>{const a=(await getAnn()).slice().sort((x,y)=>y.time-x.time).slice(0,5);
+  return a.length?`<section class="glass"><h2>📢 اطلاعیه‌های معلم</h2>${a.map(x=>`<div class="ann"><b>${esc(x.title)}</b><br>${esc(x.text)}<br><small class="sub">${faDate(x.time)}</small></div>`).join('')}</section>`:'<section class="glass"><h2>📢 اطلاعیه‌ها</h2><p class="sub">هنوز اطلاعیه‌ای نیست.</p></section>'};
+/* ---------- بخش دانش‌آموز ---------- */
+let me=null, chosenFile=null;
+function studentLogin(){me=null;$('#home').classList.add('hide');app.innerHTML=`<section class="glass"><h2>ورود دانش‌آموز</h2><p class="sub">برای اولین بار که وارد می‌شوی، همین رمزی که می‌زنی برای بعد ثبت می‌شود.</p>
+<div class="row"><div><label for="n">نام و نام خانوادگی</label><input id="n" autocomplete="off"></div><div><label for="sc">نام مدرسه</label><input id="sc" autocomplete="off"></div>
+<div><label for="cl">کلاس</label><input id="cl" value="هفتم"></div><div><label>شهر و استان</label><div class="fixed">گلپایگان، اصفهان</div></div></div>
+<label for="pw">رمز عبور</label><input id="pw" type="password" autocomplete="off"><button class="go" id="in">ورود</button>
+<details><summary>راهنمای سریع</summary><p class="sub">۱) فایلت را انتخاب کن و «ارسال برای معلم» را بزن. ۲) اگر معلم با دستگاه دیگری کار می‌کند، دکمه «بسته برای معلم» را بزن و آن فایل را برای معلم بفرست تا در پنل خودش وارد کند. ۳) داده‌ها فقط در همین مرورگر و دستگاه می‌مانند؛ پاک شدن حافظه مرورگر یعنی پاک شدن فایل‌ها، پس نسخه‌ای از کارت هم نزد خودت نگه دار.</p></details></section><div id="ann"></div>`;
+ annHtml().then(h=>{const e=$('#ann');if(e)e.innerHTML=h});
+ $('#in').onclick=async()=>{const n=$('#n').value.trim(),sc=$('#sc').value.trim(),cl=$('#cl').value.trim(),pw=$('#pw').value;
+  if(!n||!sc||!cl||pw.length<4)return say('همه‌ی فیلدها را پر کن و رمز دست‌کم ۴ حرف باشد.',1);
+  const k='st:'+n.replace(/\s+/g,' ')+'|'+cl,lock=checkLock(k);
+  if(lock)return say(`به‌خاطر تلاش‌های ناموفق، ${lock} دقیقه صبر کن.`,1);
+  const old=await kvGet(k);
+  if(old&&!(await credOk(old,pw))){noteFail(k);return say('رمز اشتباه است.',1)}
+  clearLock(k);
+  if(!old){await kvSet(k,await makeCred(pw));say('رمزت ثبت شد. دفعه‌ی بعد با همین رمز وارد شو.')}
+  else if(isLegacy(old)){await kvSet(k,await makeCred(pw));say('')}
+  else say('');
+  me={n,sc,cl};studentHome()}}
+async function studentHome(){
+ $('#home').classList.remove('hide');const mb=await maxMB();
+ const mine=(await fAll()).filter(f=>f.n===me.n&&f.cl===me.cl).sort((a,b)=>b.time-a.time);
+ const ann=await annHtml();
+ app.innerHTML=`${ann}<section class="glass"><h2>سلام ${esc(me.n)}</h2><p class="sub">فایل‌های مجاز: پایتون، جاوااسکریپت، ورد، پاورپوینت، پینت (png / bmp / jpg) و pdf. حداکثر حجم هر فایل: ${mb} مگابایت.</p>
+<label>انتخاب فایل</label><div class="drop" id="drop" tabindex="0" role="button" aria-label="انتخاب فایل">فایل را اینجا رها کن یا برای انتخاب، ضربه بزن<br><small id="picked">هنوز فایلی انتخاب نشده است.</small></div>
+<input id="f" type="file" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px" accept=".py,.js,.txt,.png,.jpg,.jpeg,.gif,.bmp,.pdf,.doc,.docx,.ppt,.pptx"><button class="go" id="up">ارسال برای معلم</button></section>
+<section class="glass"><h2>فایل‌های من</h2>${mine.length?mine.map(f=>`<div class="file"><span>${esc(f.name)} · ${fmt(f.size)} ${tag(f.scan.lvl)}${f.reviewed?' <span class="tag t-ok">بررسی شد</span>':''}${f.grade!==undefined&&f.grade!==''?` <b>نمره: ${esc(f.grade)} از ۲۰</b>`:''}${f.comment?`<br><small>💬 بازخورد معلم: ${esc(f.comment)}</small>`:''}<br><small class="sub">${faDate(f.time)}</small></span><span><button data-dl="${f.id}">دانلود</button><button data-pkg="${f.id}">بسته برای معلم</button><button class="rm" data-d="${f.id}">حذف</button></span></div>`).join(''):'<p class="sub">هنوز فایلی نفرستاده‌ای.</p>'}</section>`;
+ const inp=$('#f'),drop=$('#drop');
+ const pick=f=>{chosenFile=f;$('#picked').textContent=f?`${f.name} · ${fmt(f.size)}`:'هنوز فایلی انتخاب نشده است.'};
+ drop.onclick=()=>inp.click();drop.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();inp.click()}};
+ ['dragover','dragenter'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over')}));
+ ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over')}));
+ drop.addEventListener('drop',e=>{if(e.dataTransfer.files[0])pick(e.dataTransfer.files[0])});
+ inp.onchange=()=>pick(inp.files[0]);
+ $('#up').onclick=async()=>{const f=chosenFile||inp.files[0];if(!f)return say('اول یک فایل انتخاب کن.',1);
+  const ext=f.name.split('.').pop().toLowerCase();if(!EXT[ext])return say('این نوع فایل مجاز نیست.',1);
+  if(f.size>mb*1048576)return say(`حجم فایل از ${mb} مگابایت بیشتر است.`,1);
+  const buf=await f.arrayBuffer(),sc=await scan(f.name,buf);
+  if(sc.lvl==='bad')return say('فایل ارسال نشد چون مشکوک است: '+sc.why.join('، '),1);
+  await fAdd({...me,name:f.name,ext,size:f.size,time:Date.now(),scan:sc,blob:new Blob([buf])});
+  say(sc.lvl==='warn'?'ارسال شد، ولی این نکته را معلم می‌بیند: '+sc.why.join('، '):'فایل برای معلم ارسال شد.');chosenFile=null;studentHome()};
+ app.querySelectorAll('[data-d]').forEach(b=>b.onclick=async()=>{if(confirm('این فایل حذف شود؟')){await fDel(+b.dataset.d);studentHome()}});
+ app.querySelectorAll('[data-dl]').forEach(b=>b.onclick=async()=>{const f=mine.find(x=>x.id==b.dataset.dl);download(f.name,f.blob)});
+ app.querySelectorAll('[data-pkg]').forEach(b=>b.onclick=async()=>{const f=mine.find(x=>x.id==b.dataset.pkg);const buf=await f.blob.arrayBuffer();
+  download(f.name+'.submission.json',new Blob([JSON.stringify({type:'class7-submission',v:1,student:{n:f.n,sc:f.sc,cl:f.cl},file:{name:f.name,ext:f.ext,size:f.size,time:f.time,data:bufToB64(buf)}})],{type:'application/json'}));say('بسته ساخته شد؛ آن را برای معلم بفرست.')})}
+/* ---------- اجرای امن کد (iframe ایزوله) ---------- */
+function runCode(ext,code,out){
+ out.textContent='در حال اجرا…';const fr=document.createElement('iframe');fr.sandbox='allow-scripts';fr.style.display='none';
+ const py=ext==='py';let acc='';
+ const body=py?`<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"><\/script><script>onmessage=async e=>{try{const p=await loadPyodide();p.setStdout({batched:s=>parent.postMessage({o:s},'*')});p.setStderr({batched:s=>parent.postMessage({o:s},'*')});await p.runPythonAsync(e.data);parent.postMessage({d:1},'*')}catch(x){parent.postMessage({o:String(x),d:1},'*')}}<\/script>`
+ :`<script>onmessage=e=>{const L=(...a)=>parent.postMessage({o:a.join(' ')},'*');console.log=L;console.error=L;try{new Function(e.data)()}catch(x){L(String(x))}parent.postMessage({d:1},'*')}<\/script>`;
+ fr.srcdoc='<!doctype html><html><body>'+body+'</body></html>';
+ const fin=()=>{removeEventListener('message',on);clearTimeout(tm);fr.remove()};
+ const on=e=>{if(e.source!==fr.contentWindow)return;if(e.data.o!=null){acc+=e.data.o+'\n';out.textContent=acc}if(e.data.d){if(!acc)out.textContent='(برنامه خروجی‌ای نداشت)';fin()}};
+ const tm=setTimeout(()=>{out.textContent=acc+'\n⏱ پس از ۲۰ ثانیه متوقف شد.';fin()},20000);
+ addEventListener('message',on);fr.onload=()=>fr.contentWindow.postMessage(code,'*');document.body.appendChild(fr)}
+/* ---------- پنل معلم ---------- */
+const teacherCred=async()=>(await kvGet('teacher'))||DEF_TEACHER;
+const builderCred=async()=>(await kvGet('builderCred'))||BUILDER;
+function login(who,ok){$('#home').classList.add('hide');app.innerHTML=`<section class="glass"><h2>${who==='t'?'ورود معلم':'ورود سازنده'}</h2><label for="u">نام کاربری</label><input id="u" autocomplete="off"><label for="p">رمز</label><input id="p" type="password"><button class="go" id="in">ورود</button></section>`;
+ $('#in').onclick=async()=>{const id=who==='t'?'teacher':'builder',lock=checkLock(id);
+  if(lock)return say(`به‌خاطر تلاش‌های ناموفق، ${lock} دقیقه صبر کن.`,1);
+  const c=who==='t'?await teacherCred():await builderCred();
+  if($('#u').value.trim()===c.u&&await credOk(c,pwVal())){clearLock(id);say('');
+   if(who==='t'&&isLegacy(c)&&c.u)await kvSet('teacher',{u:c.u,...await makeCred($('#p').value)});
+   if(who==='b'&&isLegacy(c))await kvSet('builderCred',{u:c.u,...await makeCred($('#p').value)});
+   ok()}
+  else{noteFail(id);say('نام کاربری یا رمز درست نیست.',1)}};
+ function pwVal(){return $('#p').value}}
+async function panel(){
+ $('#home').classList.remove('hide');const all0=(await fAll()).sort((a,b)=>b.time-a.time),mb=await maxMB(),isDefault=!(await kvGet('teacher'));
+ const classes=[...new Set(all0.map(f=>f.cl))];
+ app.innerHTML=`<section class="glass"><h2>پنل معلم</h2><p class="sub">${all0.length} فایل · هر فایل قبل از ارسال بررسی خودکار شده است.</p>
+ ${isDefault?'<p class="warnbox">⚠️ هنوز با رمز پیش‌فرض وارد شده‌ای. همین حالا از بخش تنظیمات، رمز را به یک رمز ۱۲ حرفی تازه عوض کن.</p>':''}
+ <p class="warnbox">ℹ️ داده‌ها فقط در همین مرورگر و دستگاه می‌مانند. اگر دانش‌آموز با دستگاه دیگری فایل فرستاده، باید «بسته برای معلم» را بفرستد و تو آن را از بخش «وارد کردن» وارد کنی. هفته‌ای یک بار «پشتیبان کامل» بگیر.</p></section>
+<section class="glass"><h2>جستجو و فیلتر</h2><div class="row"><div><label for="q">جستجو (نام دانش‌آموز یا فایل)</label><input id="q" placeholder="مثلاً علی یا تمرین"></div>
+<div><label for="sf">وضعیت بررسی</label><select id="sf"><option value="">همه</option><option value="ok">بدون مورد مشکوک</option><option value="warn">نیاز به دقت</option><option value="bad">خطرناک</option><option value="unreviewed">بررسی‌نشده</option></select></div>
+<div><label for="cf">کلاس</label><select id="cf"><option value="">همه کلاس‌ها</option>${classes.map(c=>`<option>${esc(c)}</option>`).join('')}</select></div>
+<div><label for="so">ترتیب</label><select id="so"><option value="new">تازه‌ترین اول</option><option value="old">قدیمی‌ترین اول</option><option value="name">نام دانش‌آموز</option></select></div></div></section>
+<section class="glass"><h2>فایل‌ها</h2><div id="list"></div></section>
+<section class="glass hide" id="view"></section>
+<section class="glass"><h2>وارد کردن، خروجی و پشتیبان</h2><p class="sub">«بسته دانش‌آموز» یک فایل تکی است؛ «پشتیبان کامل» همه فایل‌ها و اطلاعیه‌هاست.</p>
+<label>وارد کردن بسته دانش‌آموز یا پشتیبان کامل (.json)</label><input id="imp" type="file" accept=".json"><button id="doimp">وارد کردن</button>
+<button id="csv">خروجی فهرست (CSV)</button><button id="backup">پشتیبان کامل (JSON)</button></section>
+<section class="glass"><h2>📢 اطلاعیه برای دانش‌آموزان</h2><div class="row"><div><label for="at">عنوان</label><input id="at"></div></div><label for="ax">متن</label><textarea id="ax"></textarea><button class="go" id="aadd">ثبت اطلاعیه</button><div id="alist"></div></section>
+<section class="glass"><h2>تنظیمات</h2><div class="row"><div><label for="mx">حداکثر حجم فایل (مگابایت)</label><input id="mx" type="number" min="0.1" step="0.1" value="${mb}"><button id="smx">ذخیره</button></div>
+<div><label for="np">رمز جدید معلم</label><input id="np" type="password" placeholder="دست‌کم ۱۲ حرف"><button id="snp">تغییر رمز</button></div></div></section>`;
+ const drawList=()=>{const q=($('#q').value||'').trim(),sf=$('#sf').value,cf=$('#cf').value,so=$('#so').value;
+  let all=all0.slice();
+  if(q)all=all.filter(f=>(f.n+' '+f.name).includes(q));
+  if(cf)all=all.filter(f=>f.cl===cf);
+  if(sf==='unreviewed')all=all.filter(f=>!f.reviewed);else if(sf)all=all.filter(f=>f.scan.lvl===sf);
+  if(so==='old')all.sort((a,b)=>a.time-b.time);else if(so==='name')all.sort((a,b)=>a.n.localeCompare(b.n,'fa'));else all.sort((a,b)=>b.time-a.time);
+  $('#list').innerHTML=all.length?all.map(f=>`<div class="file"><span><b>${esc(f.name)}</b> ${tag(f.scan.lvl)}${f.reviewed?' <span class="tag t-ok">بررسی شد</span>':''}${f.grade!==undefined&&f.grade!==''?` <b>نمره: ${esc(f.grade)}</b>`:''}<br><small class="sub">${esc(f.n)} · ${esc(f.cl)} · ${esc(f.sc)} · ${fmt(f.size)} · ${faDate(f.time)}${f.scan.why.length?'<br>'+esc(f.scan.why.join('، ')):''}${f.comment?`<br>💬 ${esc(f.comment)}`:''}</small></span>
+<span><button data-v="${f.id}">مشاهده</button><button data-dl="${f.id}">دانلود</button><button class="rm" data-d="${f.id}">حذف</button></span></div>`).join(''):`<p class="sub">فایلی با این فیلتر پیدا نشد.</p>`;
+  bindList(all)};
+ const bindList=all=>{const get=id=>all0.find(f=>f.id==id);
+  app.querySelectorAll('[data-d]').forEach(b=>b.onclick=async()=>{if(confirm('این فایل حذف شود؟')){await fDel(+b.dataset.d);panel()}});
+  app.querySelectorAll('[data-dl]').forEach(b=>b.onclick=()=>{const f=get(b.dataset.dl);download(f.name,f.blob)});
+  app.querySelectorAll('[data-v]').forEach(b=>b.onclick=async()=>{const f=get(b.dataset.v),v=$('#view'),k=EXT[f.ext];v.classList.remove('hide');
+   v.innerHTML=`<h2>${esc(f.name)}</h2><p class="sub">${esc(f.n)} · ${esc(f.cl)}</p>`;
+   if(k==='text'){const t=await f.blob.text();v.innerHTML+=`<pre>${esc(t)}</pre>`;
+    if(f.ext==='py'||f.ext==='js'){v.innerHTML+=`<button class="go" id="run">اجرا در محیط بسته</button><pre id="out">خروجی اینجا نمایش داده می‌شود.</pre>`;$('#run').onclick=()=>runCode(f.ext,t,$('#out'))}}
+   else if(k==='img'){const r=new FileReader();r.onload=()=>{v.innerHTML+=`<img class="pv" alt="" src="${r.result}">`};r.readAsDataURL(f.blob)}
+   else if(k==='pdf'){v.innerHTML+=`<embed src="${URL.createObjectURL(f.blob)}" type="application/pdf" width="100%" height="420" style="border-radius:14px">`}
+   else v.innerHTML+='<p class="sub">این نوع فایل را برای دیدن کامل دانلود کن. (پیش‌نمایش ورد و پاورپوینت در این نسخه نیست.)</p>';
+   v.innerHTML+=`<h3>بازخورد معلم</h3><label><input type="checkbox" id="rv" style="width:auto" ${f.reviewed?'checked':''}> بررسی شد</label><div class="row"><div><label for="gr">نمره (از ۲۰)</label><input id="gr" type="number" min="0" max="20" step="0.25" value="${f.grade??''}"></div></div><label for="cm">نظر معلم برای دانش‌آموز</label><textarea id="cm">${esc(f.comment||'')}</textarea><button class="go" id="savefb">ذخیره بازخورد</button>`;
+   $('#savefb').onclick=async()=>{f.reviewed=$('#rv').checked;f.grade=$('#gr').value;f.comment=$('#cm').value;await fPut(f);say('بازخورد ذخیره شد؛ دانش‌آموز آن را در «فایل‌های من» می‌بیند.');panel()};
+   v.scrollIntoView({behavior:'smooth'})})};
+ ['q','sf','cf','so'].forEach(id=>{$('#'+id).addEventListener('input',drawList);$('#'+id).addEventListener('change',drawList)});
+ drawList();
+ const drawAnn=async()=>{const a=(await getAnn()).sort((x,y)=>y.time-x.time);
+  $('#alist').innerHTML=a.length?a.map(x=>`<div class="file"><span><b>${esc(x.title)}</b><br><small class="sub">${esc(x.text)}</small></span><button class="rm" data-a="${x.id}">حذف</button></div>`).join(''):'<p class="sub">هنوز اطلاعیه‌ای نیست.</p>';
+  $('#alist').querySelectorAll('[data-a]').forEach(b=>b.onclick=async()=>{await kvSet('announcements',(await getAnn()).filter(x=>x.id!=b.dataset.a));drawAnn()})};
+ $('#aadd').onclick=async()=>{const t=$('#at').value.trim(),x=$('#ax').value.trim();if(!t||!x)return say('عنوان و متن اطلاعیه را بنویس.',1);const a=await getAnn();a.push({id:Date.now(),title:t,text:x,time:Date.now()});await kvSet('announcements',a);$('#at').value='';$('#ax').value='';say('اطلاعیه ثبت شد.');drawAnn()};
+ drawAnn();
+ $('#smx').onclick=async()=>{const x=parseFloat($('#mx').value);if(x>0){await kvSet('maxMB',x);say('ذخیره شد.')}};
+ $('#snp').onclick=async()=>{const p=$('#np').value;if(p.length<12)return say('رمز باید دست‌کم ۱۲ حرف باشد.',1);const c=await teacherCred();await kvSet('teacher',{u:c.u,...await makeCred(p)});$('#np').value='';say('رمز معلم عوض شد.')};
+ $('#csv').onclick=()=>{const rows=[['نام','کلاس','مدرسه','فایل','حجم','وضعیت','بررسی','نمره','نظر','تاریخ']];
+  all0.forEach(f=>rows.push([f.n,f.cl,f.sc,f.name,fmt(f.size),f.scan.lvl,f.reviewed?'بله':'خیر',f.grade??'',(f.comment||'').replace(/\n/g,' '),faDate(f.time)]));
+  const csv='\ufeff'+rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  download('class7-files.csv',new Blob([csv],{type:'text/csv;charset=utf-8'}))};
+ $('#backup').onclick=async()=>{const files=[];for(const f of all0){const buf=await f.blob.arrayBuffer();files.push({n:f.n,sc:f.sc,cl:f.cl,name:f.name,ext:f.ext,size:f.size,time:f.time,scan:f.scan,reviewed:!!f.reviewed,grade:f.grade||'',comment:f.comment||'',data:bufToB64(buf)})}
+  download('class7-backup.json',new Blob([JSON.stringify({type:'class7-backup',v:1,exportedAt:Date.now(),maxMB:mb,announcements:await getAnn(),files})],{type:'application/json'}));say('پشتیبان کامل ساخته شد؛ آن را در جایی امن نگه دار.')};
+ $('#doimp').onclick=async()=>{const file=$('#imp').files[0];if(!file)return say('اول یک فایل json انتخاب کن.',1);
+  let j;try{j=JSON.parse(await file.text())}catch(e){return say('این فایل json معتبر نیست.',1)}
+  if(j.type==='class7-submission'){const d=j.file,buf=b64ToBuf(d.data),sc=await scan(d.name,buf);
+   if(sc.lvl==='bad')return say('بسته رد شد چون مشکوک است: '+sc.why.join('، '),1);
+   await fAdd({...j.student,name:d.name,ext:d.ext,size:d.size,time:d.time||Date.now(),scan:sc,blob:new Blob([buf])});say('بسته دانش‌آموز وارد شد.');panel();return}
+  if(j.type==='class7-backup'){let n=0;for(const d of j.files){const buf=b64ToBuf(d.data),sc=await scan(d.name,buf);if(sc.lvl==='bad')continue;await fAdd({n:d.n,sc:d.sc,cl:d.cl,name:d.name,ext:d.ext,size:d.size,time:d.time,scan:sc,reviewed:!!d.reviewed,grade:d.grade||'',comment:d.comment||'',blob:new Blob([buf])});n++}
+   if(j.announcements)await kvSet('announcements',j.announcements);if(j.maxMB)await kvSet('maxMB',j.maxMB);say(`${n} فایل از پشتیبان وارد شد.`);panel();return}
+  say('نوع این فایل شناخته نشد؛ باید «بسته دانش‌آموز» یا «پشتیبان کامل» همین سایت باشد.',1)}}
+/* ---------- پنل سازنده ---------- */
+function builder(){
+ $('#home').classList.remove('hide');
+ app.innerHTML=`<section class="glass"><h2>پنل سازنده</h2><p class="sub">این بخش فقط برای توست و معلم آن را نمی‌بیند.</p></section>
+<section class="glass"><h2>آزمایش دسترسی (بدون فیلترشکن امتحان کن)</h2><button class="go" id="tst">شروع آزمایش</button><div id="res"></div></section>
+<section class="glass"><h2>نگهداری</h2><button id="rt">برگرداندن رمز معلم به رمز اولیه</button><button class="rm" id="wipe">پاک کردن همه‌ی فایل‌ها و دانش‌آموزان</button><p class="sub">پیش از پاک کردن، از پنل معلم «پشتیبان کامل» بگیر.</p></section>`;
+ $('#tst').onclick=async()=>{const T=[['گیت‌هاب','https://github.com/favicon.ico'],['سایت Supabase','https://supabase.com/favicon.ico'],['سرور Supabase (supabase.co)','https://status.supabase.com/'],['jsDelivr (برای اجرای پایتون)','https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js'],['Cloudflare','https://www.cloudflare.com/favicon.ico']],r=$('#res');r.innerHTML='';
+  for(const[n,u]of T){const l=document.createElement('p');l.textContent=n+' … ';r.appendChild(l);const c=new AbortController(),t=setTimeout(()=>c.abort(),8000);
+   try{await fetch(u,{mode:'no-cors',cache:'no-store',signal:c.signal});l.textContent=n+' ✓ باز شد'}catch(e){l.textContent=n+' ✗ باز نشد'}clearTimeout(t)}}
+ $('#rt').onclick=async()=>{await tx('kv','readwrite',o=>o.delete('teacher'));say('رمز معلم به حالت اولیه برگشت.')};
+ $('#wipe').onclick=async()=>{if(confirm('همه چیز پاک می‌شود. مطمئنی؟')){await tx('files','readwrite',o=>o.clear());await tx('kv','readwrite',o=>o.clear());say('پاک شد.')}}}
+/* ---------- آزمون ورودی: فقط مدرسه دهخدا، فقط پایه هفتم ---------- */
+/* این فیلتر سمت مرورگر است، نه قفل واقعی سرور: کسی که کد صفحه را ببیند می‌تواند آن را دور بزند،
+   ولی بازدیدکننده عادیِ مدرسه یا پایه دیگر، جلوتر از این آزمون نمی‌رود. در هر بازدید دوباره پرسیده می‌شود. */
+let gatePassed=false;
+const normFa=s=>String(s).trim().replace(/[ي]/g,'ی').replace(/[ك]/g,'ک').replace(/[\s‌_\-]/g,'').replace(/مدرسه|دبیرستان|آموزشگاه|متوسطه/g,'');
+function gateScreen(step){
+ $('#home').classList.add('hide');$('#title').textContent='کارگاه کار و فناوری · هفتم';
+ if(step==='reject'){app.innerHTML=`<section class="glass"><h2>دسترسی داده نشد</h2><p>این سایت فقط برای دانش‌آموزان پایه هفتم مدرسه دهخداست.</p><button class="go" id="retry">تلاش دوباره</button></section>`;$('#retry').onclick=()=>gateScreen(1);return}
+ if(step===1){app.innerHTML=`<section class="glass"><h2>یک سؤال کوتاه</h2><p class="sub">برای ورود به سایت، اول دو سؤال جواب بده.</p><label for="g1">کدوم مدرسه‌ای؟</label><input id="g1" autocomplete="off"><button class="go" id="g1b">ادامه</button></section>`;
+  const go=()=>{const a=normFa($('#g1').value);if(!a)return say('اول مدرسه‌ات را بنویس.',1);if(a!=='دهخدا')return gateScreen('reject');say('');gateScreen(2)};
+  $('#g1b').onclick=go;$('#g1').onkeydown=e=>{if(e.key==='Enter')go()};$('#g1').focus();return}
+ app.innerHTML=`<section class="glass"><h2>سؤال دوم</h2><label for="g2">چه پایه‌ای هستی؟</label><input id="g2" autocomplete="off" placeholder="مثلاً هفتم"><button class="go" id="g2b">ورود به سایت</button></section>`;
+ const go=()=>{let a=normFa($('#g2').value).replace(/پایه|کلاس|مقطع/g,'');if(!a)return say('اول پایه‌ات را بنویس.',1);if(a!=='هفتم'&&a!=='۷'&&a!=='7')return gateScreen('reject');gatePassed=true;try{sessionStorage.setItem('class7_gate','ok')}catch(e){}say('');route()};
+ $('#g2b').onclick=go;$('#g2').onkeydown=e=>{if(e.key==='Enter')go()};$('#g2').focus()}
+/* ---------- مسیریاب ---------- */
+function route(){say('');let ok=gatePassed;try{ok=ok||sessionStorage.getItem('class7_gate')==='ok'}catch(e){}if(!ok){gateScreen(1);return}
+ const h=location.hash;
+ if(h==='#teacher'){$('#title').textContent='پنل معلم';login('t',panel)}
+ else if(h==='#builder'){$('#title').textContent='پنل سازنده';login('b',builder)}
+ else{$('#title').textContent='کارگاه کار و فناوری · هفتم';studentLogin()}}
+$('#home').onclick=()=>{location.hash='';route()};
+addEventListener('hashchange',route);
+openDb().then(route).catch(()=>say('مرورگر اجازه‌ی ذخیره‌سازی نمی‌دهد (حالت ناشناس را خاموش کن).',1));
+</script>
+</body>
+</html>
